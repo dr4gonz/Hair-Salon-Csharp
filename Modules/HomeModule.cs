@@ -8,7 +8,7 @@ namespace HairSalon
     {
         public HomeModule()
         {
-            Get["/"] = _ => View["index.cshtml", cuisineList];
+            Get["/"] = _ => View["index.cshtml"];
         }
     }
 }

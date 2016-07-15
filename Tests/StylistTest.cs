@@ -17,3 +17,6 @@ namespace HairSalon
         {
             Stylist.DeleteAll();
         }
+
+    }
+}
