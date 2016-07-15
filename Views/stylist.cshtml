@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <title>Hair Salon</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1> Hair Salon Management</h1>
+            <br>
+            <h4>Add a Client: </h4>
+            <form role="form" action="/stylist/client/add" method="post">
+                <div class="form-group">
+                    <label for="client-name">Name: </label>
+                    <input type="text" name="client-name" id="client-name" placeholder="Name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="client-phone">Phone Number: </label>
+                    <input type="text" name="client-phone" id="client-phone" placeholder="Phone Number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="client-email">Email Address: </label>
+                    <input type="text" name="client-email" id="client-email" placeholder="Email" class="form-control">
+                </div>
+                <input type="hidden" name="stylist-id" id="stylist-id" value="@Model.GetId()">
+                <button type="submit" name="button">Add Client</button>
+            </form>
+            @if (Model.GetClients().Count == 0)
+            {
+                <p>This Stylist has no clients.</p>
+            }
+            else
+            {
+                <h2>Clients: </h2>
+                <ul class="list-group">
+                    @foreach (var client in Model.GetClients())
+                    {
+                        <h4>@client.GetName()</h4>
+                        <li class="list-item">Phone: @client.GetPhone()</li>
+                        <li class="list-item">Email: @client.GetEmail()</li>
+                    }
+                </ul>
+            }
+        <p><a href="/">Home</a></p>
+        </div>
+    </body>
+</html>
