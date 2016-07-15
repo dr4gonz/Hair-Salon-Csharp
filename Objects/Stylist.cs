@@ -216,5 +216,37 @@ namespace HairSalon
 
             if(conn != null) conn.Close();
         }
+
+        public List<Client> GetClients()
+        {
+            SqlConnection conn = DB.Connection();
+            SqlDataReader rdr = null;
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT * FROM clients WHERE stylist_id = @StylistId;", conn);
+            SqlParameter stylistIdParameter = new SqlParameter();
+            stylistIdParameter.ParameterName = "@StylistId";
+            stylistIdParameter.Value = this.GetId();
+            cmd.Parameters.Add(stylistIdParameter);
+
+            rdr = cmd.ExecuteReader();
+            List<Client> allClients = new List<Client>{};
+
+            while(rdr.Read())
+            {
+                int clientId = rdr.GetInt32(0);
+                string clientName = rdr.GetString(1);
+                string clientPhone = rdr.GetString(2);
+                string clientEmail = rdr.GetString(3);
+                int stylistId = rdr.GetInt32(4);
+                Client newClient = new Client(clientName, clientPhone, clientEmail, stylistId, clientId);
+                allClients.Add(newClient);
+            }
+
+            if(rdr != null) rdr.Close();
+            if(conn != null) conn.Close();
+
+            return allClients;
+        }
     }
 }
