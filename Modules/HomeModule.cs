@@ -39,11 +39,35 @@ namespace HairSalon
                 return View["stylist.cshtml", stylist];
             };
 
+            Get["/stylist/edit/{id}"] = parameters => {
+                Stylist selectedStylist = Stylist.Find(parameters.id);
+                return View["stylist_edit.cshtml", selectedStylist];
+            };
+
+            Patch["/stylist/edit/{id}"] = parameters => {
+              Stylist selectedStylist = Stylist.Find(parameters.id);
+              selectedStylist.Update(Request.Form["stylist-name"], Request.Form["stylist-phone"], Request.Form["stylist-email"]);
+              List<Stylist> allStylists = Stylist.GetAll();
+              return View["index.cshtml", allStylists];
+            };
+
+            Get["/stylist/delete/{id}"] = parameters => {
+                Stylist selectedStylist = Stylist.Find(parameters.id);
+                return View["stylist_delete.cshtml", selectedStylist];
+            };
+
+            Delete["/stylist/delete/{id}"] = parameters => {
+                Stylist selectedStylist = Stylist.Find(parameters.id);
+                selectedStylist.Delete();
+                List<Stylist> allStylists = Stylist.GetAll();
+                return View["index.cshtml", allStylists];
+            };
+            //Client Routes
             Get["/client/edit/{id}"] = parameters => {
                 Client selectedClient = Client.Find(parameters.id);
                 return View["client_edit.cshtml", selectedClient];
             };
-            
+
             Patch["/client/edit/{id}"] = parameters => {
               Client selectedClient = Client.Find(parameters.id);
               Stylist stylist = Stylist.Find(Request.Form["client-stylist-id"]);

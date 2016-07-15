@@ -9,22 +9,21 @@
         <div class="container">
             <h1> Hair Salon Management</h1>
             <br>
-            <form role="form" action="/client/edit/@Model.GetId()" method="post">
+            <form role="form" action="/stylist/edit/@Model.GetId()" method="post">
                 <input type="hidden" name="_method" value="PATCH">
-                <input name="client-id" type="hidden" value="@Model.GetId()">
+                <input name="stylist-id" type="hidden" value="@Model.GetId()">
                 <div class="form-group">
-                    <label for="client-name">Client name</label>
-                    <input id="client-name" name="client-name" type="text" required>
+                    <label for="stylist-name">Stylist name</label>
+                    <input id="stylist-name" name="stylist-name" type="text" required>
                 </div>
                 <div class="form-group">
-                    <label for="client-phone">Client phone</label>
-                    <input id="client-phone" name="client-phone" type="text" required>
+                    <label for="stylist-phone">Stylist phone</label>
+                    <input id="stylist-phone" name="stylist-phone" type="text" required>
                 </div>
                 <div class="form-group">
-                    <label for="client-email">Client email</label>
-                    <input id="client-email" name="client-email" type="text" required>
+                    <label for="stylist-email">Stylist email</label>
+                    <input id="stylist-email" name="stylist-email" type="text" required>
                 </div>
-                <input type="hidden" name="client-stylist-id" id="client-stylist-id" value="@Model.GetStylistId()">
                 <button type="submit" name="button">Make Changes</button>
             </form>
         </div>

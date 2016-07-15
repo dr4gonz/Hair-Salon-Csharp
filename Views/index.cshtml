@@ -37,7 +37,7 @@
                 <ul class="list-group">
                     @foreach (var stylist in Model)
                     {
-                        <h4><a href="/stylist/@stylist.GetId()">@stylist.GetName()</a></h4>
+                        <h4><a href="/stylist/@stylist.GetId()">@stylist.GetName()</a></h4><h5><a href="/stylist/edit/@stylist.GetId()">Edit</a>-<a href="/stylist/delete/@stylist.GetId()">Delete</a></h5>
                         <li class="list-item">Phone: @stylist.GetPhone()</li>
                         <li class="list-item">Email: @stylist.GetEmail()</li>
                     }
