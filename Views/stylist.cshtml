@@ -36,7 +36,7 @@
                 <ul class="list-group">
                     @foreach (var client in Model.GetClients())
                     {
-                        <h4>@client.GetName()</h4>
+                        <h4>@client.GetName()</h4><h5><a href="/client/edit/@client.GetId()">Edit</a>-<a href="/client/delete/@client.GetId()">Delete</a></h5>
                         <li class="list-item">Phone: @client.GetPhone()</li>
                         <li class="list-item">Email: @client.GetEmail()</li>
                     }
