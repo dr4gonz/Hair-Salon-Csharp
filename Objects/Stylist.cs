@@ -159,5 +159,46 @@ namespace HairSalon
 
             return newStylist;
         }
+
+        public void Update(string newName, string newPhone, string newEmail)
+        {
+            SqlConnection conn = DB.Connection();
+            SqlDataReader rdr = null;
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("UPDATE stylists SET name = @NewName, phone = @NewPhone, email = @NewEmail OUTPUT INSERTED.name, INSERTED.phone, INSERTED.email WHERE id = @StylistId;", conn);
+
+            SqlParameter newNameParameter = new SqlParameter();
+            newNameParameter.ParameterName = "@NewName";
+            newNameParameter.Value = newName;
+            cmd.Parameters.Add(newNameParameter);
+
+            SqlParameter newPhoneParameter = new SqlParameter();
+            newPhoneParameter.ParameterName = "@NewPhone";
+            newPhoneParameter.Value = newPhone;
+            cmd.Parameters.Add(newPhoneParameter);
+
+            SqlParameter newEmailParameter = new SqlParameter();
+            newEmailParameter.ParameterName = "@NewEmail";
+            newEmailParameter.Value = newEmail;
+            cmd.Parameters.Add(newEmailParameter);
+
+            SqlParameter stylistIdParameter = new SqlParameter();
+            stylistIdParameter.ParameterName = "@StylistId";
+            stylistIdParameter.Value = this.GetId();
+            cmd.Parameters.Add(stylistIdParameter);
+
+            rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+            {
+                this._name = rdr.GetString(0);
+                this._phone = rdr.GetString(1);
+                this._email = rdr.GetString(2);
+            }
+
+            if(rdr != null) rdr.Close();
+            if(conn != null) conn.Close();
+        }
     }
 }
