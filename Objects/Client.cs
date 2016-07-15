@@ -5,18 +5,20 @@ using System.Data.SqlClient;
 
 namespace HairSalon
 {
-    public class Stylist
+    public class Client
     {
         private int _id;
         private string _name;
         private string _phone;
         private string _email;
+        private int _stylist_id;
 
-        public Stylist(string name, string phone, string email, int id = 0)
+        public Client(string name, string phone, string email, int stylist_id, int id = 0)
         {
             _name = name;
             _phone = phone;
             _email = email;
+            _stylist_id = stylist_id;
             _id = id;
         }
 
@@ -39,56 +41,63 @@ namespace HairSalon
             return _email;
         }
 
+        public int GetStylistId()
+        {
+            return _stylist_id;
+        }
+
         public static void DeleteAll()
         {
             SqlConnection conn = DB.Connection();
             conn.Open();
-            SqlCommand cmd = new SqlCommand("DELETE FROM stylists;", conn);
+            SqlCommand cmd = new SqlCommand("DELETE FROM clients;", conn);
             cmd.ExecuteNonQuery();
         }
 
-        public static List<Stylist> GetAll()
+        public static List<Client> GetAll()
         {
-            List<Stylist> allStylists = new List<Stylist>{};
+            List<Client> allClients = new List<Client>{};
 
             SqlConnection conn = DB.Connection();
             SqlDataReader rdr = null;
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("SELECT * FROM stylists;", conn);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM clients;", conn);
             rdr = cmd.ExecuteReader();
 
             while(rdr.Read())
             {
-                int newStylistId = rdr.GetInt32(0);
-                string newStylistName = rdr.GetString(1);
-                string newStylistPhone = rdr.GetString(2);
-                string newStylistEmail = rdr.GetString(3);
+                int newClientId = rdr.GetInt32(0);
+                string newClientName = rdr.GetString(1);
+                string newClientPhone = rdr.GetString(2);
+                string newClientEmail = rdr.GetString(3);
+                int newClientStylistId = rdr.GetInt32(4);
 
-                Stylist newStylist = new Stylist(newStylistName, newStylistPhone, newStylistEmail, newStylistId);
-                allStylists.Add(newStylist);
+                Client newClient = new Client(newClientName, newClientPhone, newClientEmail, newClientStylistId, newClientId);
+                allClients.Add(newClient);
             }
 
             if(rdr != null) rdr.Close();
             if(conn != null) conn.Close();
 
-            return allStylists;
+            return allClients;
         }
 
-        public override bool Equals(System.Object otherStylist)
+        public override bool Equals(System.Object otherClient)
         {
-            if (!(otherStylist is Stylist))
+            if (!(otherClient is Client))
             {
                 return false;
             }
             else
             {
-                Stylist newStylist = (Stylist) otherStylist;
-                bool idEquality = (_id == newStylist.GetId());
-                bool nameEquality = (_name == newStylist.GetName());
-                bool phoneEquality = (_phone == newStylist.GetPhone());
-                bool emailEquality = (_email == newStylist.GetEmail());
-                return (idEquality && nameEquality && phoneEquality && emailEquality);
+                Client newClient = (Client) otherClient;
+                bool idEquality = (_id == newClient.GetId());
+                bool nameEquality = (_name == newClient.GetName());
+                bool phoneEquality = (_phone == newClient.GetPhone());
+                bool emailEquality = (_email == newClient.GetEmail());
+                bool stylistIdEquality = (_stylist_id == newClient.GetStylistId());
+                return (idEquality && nameEquality && phoneEquality && emailEquality && stylistIdEquality);
             }
         }
 
@@ -98,22 +107,27 @@ namespace HairSalon
             SqlDataReader rdr = null;
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("INSERT INTO stylists (name, phone, email) OUTPUT INSERTED.id VALUES(@StylistName, @StylistPhone, @StylistEmail);", conn);
+            SqlCommand cmd = new SqlCommand("INSERT INTO clients (name, phone, email, stylist_id) OUTPUT INSERTED.id VALUES(@ClientName, @ClientPhone, @ClientEmail, @ClientStylistId);", conn);
 
-            SqlParameter stylistNameParameter = new SqlParameter();
-            stylistNameParameter.ParameterName = "@StylistName";
-            stylistNameParameter.Value = this.GetName();
-            cmd.Parameters.Add(stylistNameParameter);
+            SqlParameter clientNameParameter = new SqlParameter();
+            clientNameParameter.ParameterName = "@ClientName";
+            clientNameParameter.Value = this.GetName();
+            cmd.Parameters.Add(clientNameParameter);
 
-            SqlParameter stylistPhoneParameter = new SqlParameter();
-            stylistPhoneParameter.ParameterName = "@StylistPhone";
-            stylistPhoneParameter.Value = this.GetPhone();
-            cmd.Parameters.Add(stylistPhoneParameter);
+            SqlParameter clientPhoneParameter = new SqlParameter();
+            clientPhoneParameter.ParameterName = "@ClientPhone";
+            clientPhoneParameter.Value = this.GetPhone();
+            cmd.Parameters.Add(clientPhoneParameter);
 
-            SqlParameter stylistEmailParameter = new SqlParameter();
-            stylistEmailParameter.ParameterName = "@StylistEmail";
-            stylistEmailParameter.Value = this.GetEmail();
-            cmd.Parameters.Add(stylistEmailParameter);
+            SqlParameter clientEmailParameter = new SqlParameter();
+            clientEmailParameter.ParameterName = "@ClientEmail";
+            clientEmailParameter.Value = this.GetEmail();
+            cmd.Parameters.Add(clientEmailParameter);
+
+            SqlParameter clientStylistIdParameter = new SqlParameter();
+            clientStylistIdParameter.ParameterName = "@ClientStylistId";
+            clientStylistIdParameter.Value = this.GetStylistId();
+            cmd.Parameters.Add(clientStylistIdParameter);
 
             rdr = cmd.ExecuteReader();
 
@@ -126,47 +140,49 @@ namespace HairSalon
             if(conn != null) conn.Close();
         }
 
-        public static Stylist Find(int id)
+        public static Client Find(int id)
         {
             SqlConnection conn = DB.Connection();
             SqlDataReader rdr = null;
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("SELECT * FROM stylists WHERE id = @StylistId;", conn);
-            SqlParameter stylistIdParameter = new SqlParameter();
-            stylistIdParameter.ParameterName = "@StylistId";
-            stylistIdParameter.Value = id.ToString();
-            cmd.Parameters.Add(stylistIdParameter);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM clients WHERE id = @ClientId;", conn);
+            SqlParameter clientIdParameter = new SqlParameter();
+            clientIdParameter.ParameterName = "@ClientId";
+            clientIdParameter.Value = id.ToString();
+            cmd.Parameters.Add(clientIdParameter);
 
             rdr = cmd.ExecuteReader();
 
-            int foundStylistId = 0;
-            string foundStylistName = null;
-            string foundStylistPhone = null;
-            string foundStylistEmail = null;
+            int foundClientId = 0;
+            string foundClientName = null;
+            string foundClientPhone = null;
+            string foundClientEmail = null;
+            int foundClientStylistId = 0;
 
             while(rdr.Read())
             {
-                foundStylistId = rdr.GetInt32(0);
-                foundStylistName = rdr.GetString(1);
-                foundStylistPhone = rdr.GetString(2);
-                foundStylistEmail = rdr.GetString(3);
+                foundClientId = rdr.GetInt32(0);
+                foundClientName = rdr.GetString(1);
+                foundClientPhone = rdr.GetString(2);
+                foundClientEmail = rdr.GetString(3);
+                foundClientStylistId = rdr.GetInt32(4);
             }
-            Stylist newStylist = new Stylist(foundStylistName, foundStylistPhone, foundStylistEmail, foundStylistId);
+            Client newClient = new Client(foundClientName, foundClientPhone, foundClientEmail, foundClientStylistId, foundClientId);
 
             if(rdr != null) rdr.Close();
             if(conn != null) conn.Close();
 
-            return newStylist;
+            return newClient;
         }
 
-        public void Update(string newName, string newPhone, string newEmail)
+        public void Update(string newName, string newPhone, string newEmail, int newStylistId)
         {
             SqlConnection conn = DB.Connection();
             SqlDataReader rdr = null;
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("UPDATE stylists SET name = @NewName, phone = @NewPhone, email = @NewEmail OUTPUT INSERTED.name, INSERTED.phone, INSERTED.email WHERE id = @StylistId;", conn);
+            SqlCommand cmd = new SqlCommand("UPDATE clients SET name = @NewName, phone = @NewPhone, email = @NewEmail, stylist_id = @NewStylistId OUTPUT INSERTED.name, INSERTED.phone, INSERTED.email, INSERTED.stylist_id WHERE id = @ClientId;", conn);
 
             SqlParameter newNameParameter = new SqlParameter();
             newNameParameter.ParameterName = "@NewName";
@@ -183,10 +199,15 @@ namespace HairSalon
             newEmailParameter.Value = newEmail;
             cmd.Parameters.Add(newEmailParameter);
 
-            SqlParameter stylistIdParameter = new SqlParameter();
-            stylistIdParameter.ParameterName = "@StylistId";
-            stylistIdParameter.Value = this.GetId();
-            cmd.Parameters.Add(stylistIdParameter);
+            SqlParameter newStylistIdParamter = new SqlParameter();
+            newStylistIdParamter.ParameterName = "@NewStylistId";
+            newStylistIdParamter.Value = newStylistId;
+            cmd.Parameters.Add(newStylistIdParamter);
+
+            SqlParameter clientIdParameter = new SqlParameter();
+            clientIdParameter.ParameterName = "@ClientId";
+            clientIdParameter.Value = this.GetId();
+            cmd.Parameters.Add(clientIdParameter);
 
             rdr = cmd.ExecuteReader();
 
@@ -195,22 +216,24 @@ namespace HairSalon
                 this._name = rdr.GetString(0);
                 this._phone = rdr.GetString(1);
                 this._email = rdr.GetString(2);
+                this._stylist_id = rdr.GetInt32(3);
             }
 
             if(rdr != null) rdr.Close();
             if(conn != null) conn.Close();
         }
+
         public void Delete()
         {
             SqlConnection conn = DB.Connection();
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("DELETE FROM stylists WHERE id = @StylistId;", conn);
+            SqlCommand cmd = new SqlCommand("DELETE FROM clients WHERE id = @ClientId;", conn);
 
-            SqlParameter stylistIdParameter = new SqlParameter();
-            stylistIdParameter.ParameterName = "@StylistId";
-            stylistIdParameter.Value = this.GetId();
-            cmd.Parameters.Add(stylistIdParameter);
+            SqlParameter clientIdParameter = new SqlParameter();
+            clientIdParameter.ParameterName = "@ClientId";
+            clientIdParameter.Value = this.GetId();
+            cmd.Parameters.Add(clientIdParameter);
 
             cmd.ExecuteNonQuery();
 
