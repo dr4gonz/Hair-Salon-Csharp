@@ -90,5 +90,39 @@ namespace HairSalon
                 return (idEquality && nameEquality && phoneEquality && emailEquality);
             }
         }
+
+        public void Save()
+        {
+            SqlConnection conn = DB.Connection();
+            SqlDataReader rdr = null;
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("INSERT INTO stylists (name, phone, email) OUTPUT INSERTED.id VALUES(@StylistName, @StylistPhone, @StylistEmail);", conn);
+
+            SqlParameter stylistNameParameter = new SqlParameter();
+            stylistNameParameter.ParameterName = "@StylistName";
+            stylistNameParameter.Value = this.GetName();
+            cmd.Parameters.Add(stylistNameParameter);
+
+            SqlParameter stylistPhoneParameter = new SqlParameter();
+            stylistPhoneParameter.ParameterName = "@StylistPhone";
+            stylistPhoneParameter.Value = this.GetPhone();
+            cmd.Parameters.Add(stylistPhoneParameter);
+
+            SqlParameter stylistEmailParameter = new SqlParameter();
+            stylistEmailParameter.ParameterName = "@StylistEmail";
+            stylistEmailParameter.Value = this.GetEmail();
+            cmd.Parameters.Add(stylistEmailParameter);
+
+            rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+            {
+                this._id = rdr.GetInt32(0);
+            }
+
+            if(rdr != null) rdr.Close();
+            if(conn != null) conn.Close();
+        }
     }
 }

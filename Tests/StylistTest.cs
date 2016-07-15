@@ -36,5 +36,17 @@ namespace HairSalon
             //Assert
             Assert.Equal(firstStylist, secondStylist);
         }
+
+        [Fact]
+        public void Stylists_SavesToDatabase()
+        {
+            //Arrange
+            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            //Act
+            newStylist.Save();
+            Stylist savedStylist = Stylist.GetAll()[0];
+            //Assert
+            Assert.Equal(newStylist, savedStylist);
+        }
     }
 }
