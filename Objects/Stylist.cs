@@ -44,6 +44,7 @@ namespace HairSalon
             SqlConnection conn = DB.Connection();
             conn.Open();
             SqlCommand cmd = new SqlCommand("DELETE FROM stylists;", conn);
+            cmd.ExecuteNonQuery();
         }
 
         public static List<Stylist> GetAll()
@@ -123,6 +124,40 @@ namespace HairSalon
 
             if(rdr != null) rdr.Close();
             if(conn != null) conn.Close();
+        }
+
+        public static Stylist Find(int id)
+        {
+            SqlConnection conn = DB.Connection();
+            SqlDataReader rdr = null;
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT * FROM stylists WHERE id = @StylistId;", conn);
+            SqlParameter stylistIdParameter = new SqlParameter();
+            stylistIdParameter.ParameterName = "@StylistId";
+            stylistIdParameter.Value = id.ToString();
+            cmd.Parameters.Add(stylistIdParameter);
+
+            rdr = cmd.ExecuteReader();
+
+            int foundStylistId = 0;
+            string foundStylistName = null;
+            string foundStylistPhone = null;
+            string foundStylistEmail = null;
+
+            while(rdr.Read())
+            {
+                foundStylistId = rdr.GetInt32(0);
+                foundStylistName = rdr.GetString(1);
+                foundStylistPhone = rdr.GetString(2);
+                foundStylistEmail = rdr.GetString(3);
+            }
+            Stylist newStylist = new Stylist(foundStylistName, foundStylistPhone, foundStylistEmail, foundStylistId);
+
+            if(rdr != null) rdr.Close();
+            if(conn != null) conn.Close();
+
+            return newStylist;
         }
     }
 }

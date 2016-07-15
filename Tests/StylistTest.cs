@@ -13,10 +13,6 @@ namespace HairSalon
             // DBConfiguration.ConnectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=best_restaurants_test;Integrated Security=SSPI;";
             DBConfiguration.ConnectionString = "Data Source=DESKTOP-7OLC9FT\\SQLEXPRESS;Initial Catalog=hair_salon_test;Integrated Security=SSPI;";
         }
-        public void Dispose()
-        {
-            Stylist.DeleteAll();
-        }
 
         [Fact]
         public void Stylist_DatabaseEmptyAtFirst()
@@ -42,11 +38,29 @@ namespace HairSalon
         {
             //Arrange
             Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
-            //Act
             newStylist.Save();
-            Stylist savedStylist = Stylist.GetAll()[0];
+            //Act
+            List<Stylist> result = Stylist.GetAll();
+            List<Stylist> testList = new List<Stylist>{newStylist};
             //Assert
-            Assert.Equal(newStylist, savedStylist);
+            Assert.Equal(testList, result);
+        }
+
+        [Fact]
+        public void Stylists_FindsStylistInDatabase()
+        {
+            //Arrange
+            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            newStylist.Save();
+            //Act
+            Stylist foundStylist = Stylist.Find(newStylist.GetId());
+            //Assert
+            Assert.Equal(newStylist, foundStylist);
+        }
+        
+        public void Dispose()
+        {
+            Stylist.DeleteAll();
         }
     }
 }
