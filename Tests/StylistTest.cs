@@ -27,8 +27,8 @@ namespace HairSalon
         public void Stylists_ChecksIfStylistsAreEqual_returnsTrue()
         {
             //Arrange, Act
-            Stylist firstStylist = new Stylist("Matt", "5035555555", "none@none.com");
-            Stylist secondStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            Stylist firstStylist = new Stylist("Matt", "503.555.5555", "none@none.com");
+            Stylist secondStylist = new Stylist("Matt", "503.555.5555", "none@none.com");
             //Assert
             Assert.Equal(firstStylist, secondStylist);
         }
@@ -37,7 +37,7 @@ namespace HairSalon
         public void Stylists_SavesToDatabase()
         {
             //Arrange
-            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            Stylist newStylist = new Stylist("Matt", "503.555.5555", "none@none.com");
             newStylist.Save();
             //Act
             List<Stylist> result = Stylist.GetAll();
@@ -50,7 +50,7 @@ namespace HairSalon
         public void Stylists_SavesSavesWithID()
         {
             //Arrange
-            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            Stylist newStylist = new Stylist("Matt", "503.555.5555", "none@none.com");
             newStylist.Save();
             //Act
             Stylist savedStylist = Stylist.GetAll()[0];
@@ -64,7 +64,7 @@ namespace HairSalon
         public void Stylists_FindsStylistInDatabase()
         {
             //Arrange
-            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            Stylist newStylist = new Stylist("Matt", "503.555.5555", "none@none.com");
             newStylist.Save();
             //Act
             Stylist foundStylist = Stylist.Find(newStylist.GetId());
@@ -76,10 +76,10 @@ namespace HairSalon
         public void Stylists_Update_UpdatesStylistInDatabase()
         {
             //Arrange
-            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            Stylist newStylist = new Stylist("Matt", "503.555.5555", "none@none.com");
             newStylist.Save();
             string newName = "Brad";
-            string newPhone = "5036666666";
+            string newPhone = "503.666.6666";
             string newEmail = "noneatall@none.com";
             //Act
             newStylist.Update(newName, newPhone, newEmail);
@@ -91,6 +91,29 @@ namespace HairSalon
             Assert.Equal(newName, updateName);
             Assert.Equal(newPhone, updatePhone);
             Assert.Equal(newEmail, updateEmail);
+        }
+
+        [Fact]
+        public void Stylists_Delete_DeletesStylistFromDatabase()
+        {
+            //Arrange
+            string name1 = "Matt";
+            string phone1 = "503.555.5555";
+            string email1 = "none@none.com";
+            Stylist testStylist1 = new Stylist(name1, phone1, email1);
+            testStylist1.Save();
+
+            string name2 = "Brad";
+            string phone2 = "503.666.6666";
+            string email2 = "noneatall@none.com";
+            Stylist testStylist2 = new Stylist(name2, phone2, email2);
+            testStylist2.Save();
+            //Act
+            testStylist2.Delete();
+            List<Stylist> resultStylist = Stylist.GetAll();
+            List<Stylist> testStylist = new List<Stylist> {testStylist1};
+            //Assert
+            Assert.Equal(testStylist, resultStylist);
         }
 
         public void Dispose()
