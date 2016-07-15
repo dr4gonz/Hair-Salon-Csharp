@@ -47,6 +47,20 @@ namespace HairSalon
         }
 
         [Fact]
+        public void Stylists_SavesSavesWithID()
+        {
+            //Arrange
+            Stylist newStylist = new Stylist("Matt", "5035555555", "none@none.com");
+            newStylist.Save();
+            //Act
+            Stylist savedStylist = Stylist.GetAll()[0];
+            int result = newStylist.GetId();
+            int testId = savedStylist.GetId();
+            //Assert
+            Assert.Equal(testId, result);
+        }
+
+        [Fact]
         public void Stylists_FindsStylistInDatabase()
         {
             //Arrange
@@ -57,7 +71,7 @@ namespace HairSalon
             //Assert
             Assert.Equal(newStylist, foundStylist);
         }
-        
+
         public void Dispose()
         {
             Stylist.DeleteAll();
