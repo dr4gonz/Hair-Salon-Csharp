@@ -8,7 +8,20 @@ namespace HairSalon
     {
         public HomeModule()
         {
-            Get["/"] = _ => View["index.cshtml"];
+            Get["/"] = _ => {
+                List<Stylist> allStylists = Stylist.GetAll();
+                return View["index.cshtml", allStylists];
+            };
+
+            Post["/stylist/add/"] = _ => {
+                string name = Request.Form["stylist-name"];
+                string phone = Request.Form["stylist-phone"];
+                string email = Request.Form["stylist-email"];
+                Stylist newStylist = new Stylist(name, phone, email);
+                newStylist.Save();
+                List<Stylist> allStylists = Stylist.GetAll();
+                return View["index.cshtml", allStylists];
+            };
         }
     }
 }
